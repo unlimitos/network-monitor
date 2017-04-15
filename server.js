@@ -18,4 +18,8 @@ if (process.env.NODE_ENV !== 'production'){
     })
 }
 
+app.get('/hello',(rep,res)=>{
+    res.send('Hello. Wellcome to network monitor.');
+});
+
 app.listen(process.env.PORT || 3050,()=>console.log("Listening on port : ",3050));

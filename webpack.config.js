@@ -1,7 +1,10 @@
-var webpack = require('webpack');
-var path = require('path');
-var HtmlWebPackPlugin = require('html-webpack-plugin');
-const VENDOR_LIBS = [ "faker", "lodash","react","react-dom", "react-input-range", "react-redux", "react-router", "redux", "redux-form","redux-thunk"];
+const webpack = require('webpack');
+const path = require('path');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const VENDOR_LIBS = [ "faker", "lodash","react","react-dom", "react-input-range", "react-redux", "react-router", "redux",
+"redux-form","redux-thunk"];
 module.exports = {
   entry: {
       bundle: './src/index.js',
@@ -9,7 +12,8 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name].[chunkhash].js'
+    filename: '[name].[chunkhash].js',
+    publicPath:'dist/'
   },
   module : {
     rules : [
@@ -19,8 +23,20 @@ module.exports = {
           exclude: /node_modules/
         },
         {
-          use :['style-loader','css-loader'],
-          test: /\.css$/
+           loader: ExtractTextPlugin.extract({
+                loader: 'css-loader'
+            }),
+           test: /\.css$/
+        },
+        {
+            test: /\.(jpe?g|png|gif|svg)$/,
+            use: [
+                {
+                    loader: 'url-loader',
+                    options: {limit: 40000}
+                },
+                'image-webpack-loader'
+            ]
         }
     ]
   },
@@ -35,6 +51,7 @@ module.exports = {
           {
               'process.env.NODE_ENV' : JSON.stringify(process.env.NODE_ENV)
           }
-      )
+      ),
+      new ExtractTextPlugin('style.css')
   ]
 };
